@@ -927,7 +927,7 @@ public class Zendesk implements Closeable {
                 handleList(User.class, "users")));
     }
 
-    public List<User> getUsersByExternalIds(long externalId, long... externalIds) {
+    public List<User> getUsersByExternalIds(String externalId, String... externalIds) {
         return complete(submit(req("GET", tmpl("/users/show_many.json{?external_ids}").set("external_ids", idArray(externalId, externalIds))),
                 handleList(User.class, "users")));
     }
@@ -3081,10 +3081,10 @@ public class Zendesk implements Closeable {
         }
     }
 
-    private static List<Long> idArray(long id, long... ids) {
-        List<Long> result = new ArrayList<>(ids.length + 1);
+    private static <R> List<R> idArray(R id, R... ids) {
+        List<R> result = new ArrayList<>(ids.length + 1);
         result.add(id);
-        for (long i : ids) {
+        for (R i : ids) {
             result.add(i);
         }
         return result;
