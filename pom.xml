@@ -25,7 +25,7 @@
 
   <groupId>com.cloudbees.thirdparty</groupId>
   <artifactId>zendesk-java-client</artifactId>
-  <version>0.19.1-SNAPSHOT</version>
+  <version>0.19.1-SNAPSHOT-realgo</version>
 
   <name>zendesk-java-client</name>
   <description>Java client for the Zendesk API</description>
@@ -88,24 +88,19 @@
     <url>https://app.codeship.com/projects/302087</url>
   </ciManagement>
 
-  <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>com.fasterxml.jackson</groupId>
         <artifactId>jackson-bom</artifactId>
-        <version>2.13.4.20221013</version>
+        <version>2.14.2</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-bom</artifactId>
-        <version>4.1.84.Final</version>
+        <version>4.1.89.Final</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>      
@@ -116,12 +111,12 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>2.0.3</version>
+      <version>2.0.6</version>
     </dependency>
     <dependency>
       <groupId>org.asynchttpclient</groupId>
       <artifactId>async-http-client</artifactId>
-      <version>2.12.3</version>
+      <version>3.0.0.Beta1</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -151,7 +146,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>2.0.3</version>
+      <version>2.0.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -186,7 +181,15 @@
       <plugins>
         <plugin>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.2.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.11.0</version>
+          <configuration>
+            <release>11</release>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -198,6 +201,7 @@
       </plugins>
     </pluginManagement>
     <plugins>
+
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
         <configuration>
@@ -230,7 +234,7 @@
             <configuration>
               <rules>
                 <enforceBytecodeVersion>
-                  <maxJdkVersion>1.8</maxJdkVersion>
+                  <maxJdkVersion>11</maxJdkVersion>
                 </enforceBytecodeVersion>
               </rules>
             </configuration>
