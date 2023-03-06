@@ -23,9 +23,9 @@
     <version>9</version>
   </parent>
 
-  <groupId>com.cloudbees.thirdparty</groupId>
+  <groupId>com.realgo.fork</groupId>
   <artifactId>zendesk-java-client</artifactId>
-  <version>0.19.1-SNAPSHOT-realgo</version>
+  <version>0.19.1-SNAPSHOT-realgo-202303061026</version>
 
   <name>zendesk-java-client</name>
   <description>Java client for the Zendesk API</description>
