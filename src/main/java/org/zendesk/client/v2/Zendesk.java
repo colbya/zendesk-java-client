@@ -1029,14 +1029,14 @@ public class Zendesk implements Closeable {
         complete(submit(req("DELETE", tmpl("/users/{id}.json").set("id", id)), handleStatus()));
     }
 
-    public void deleteUsers(long id, long... ids) {
-        complete(submit(req("DELETE", tmpl("/users/destroy_many.json{?ids}").set("ids", idArray(id, ids))),
-                handleStatus()));
+    public JobStatus deleteUsers(List<Long> ids) {
+        return complete(submit(req("DELETE", tmpl("/users/destroy_many.json{?ids}").set("ids", ids)),
+                handleJobStatus()));
     }
 
-    public void deleteUsers(String externalId, String... externalIds) {
-        complete(submit(req("DELETE", tmpl("/users/destroy_many.json{?external_ids}").set("ids", idArray(externalId, externalIds))),
-                handleStatus()));
+    public JobStatus deleteUsers(String... externalIds) {
+        return complete(submit(req("DELETE", tmpl("/users/destroy_many.json{?external_ids}").set("ids", Arrays.asList(externalIds))),
+                handleJobStatus()));
     }
 
     public User permanentlyDeleteUser(User user) {
@@ -1407,6 +1407,11 @@ public class Zendesk implements Closeable {
 
     public void deleteOrganization(long id) {
         complete(submit(req("DELETE", tmpl("/organizations/{id}.json").set("id", id)), handleStatus()));
+    }
+
+    public JobStatus deleteOrganizations(List<Long> ids) {
+        return complete(submit(req("DELETE", tmpl("/organizations/destroy_many.json{?ids}").set("ids", ids)),
+                handleJobStatus()));
     }
 
     public Iterable<Organization> lookupOrganizationsByExternalId(String externalId) {
