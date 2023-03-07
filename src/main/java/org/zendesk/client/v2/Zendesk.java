@@ -63,6 +63,7 @@ import org.zendesk.client.v2.model.dynamic.DynamicContentItemVariant;
 import org.zendesk.client.v2.model.hc.Article;
 import org.zendesk.client.v2.model.hc.ArticleAttachments;
 import org.zendesk.client.v2.model.hc.Category;
+import org.zendesk.client.v2.model.hc.Locales;
 import org.zendesk.client.v2.model.hc.PermissionGroup;
 import org.zendesk.client.v2.model.hc.Section;
 import org.zendesk.client.v2.model.hc.Subscription;
@@ -2204,10 +2205,18 @@ public class Zendesk implements Closeable {
                 handleStatus()));
     }
 
-    public List<String> getHelpCenterLocales() {
+    public Locales listHelpCenterLocales() {
         return complete(submit(
-                req("GET", cnst("/help_center/locales.json")),
-                handle(List.class, "locales")));
+            req("GET", cnst("/help_center/locales.json")),
+            handle(Locales.class)));
+    }
+
+    /**
+     * @deprecated Use {@link Zendesk#listHelpCenterLocales()} instead
+     */
+    @Deprecated
+    public List<String> getHelpCenterLocales() {
+        return listHelpCenterLocales().getLocales();
     }
 
     /**
@@ -2260,6 +2269,13 @@ public class Zendesk implements Closeable {
         return new PagedIterable<>(
                 tmpl("/help_center/articles/{articleId}/translations.json").set("articleId", articleId),
                 handleList(Translation.class, "translations"));
+    }
+
+    public Translation showArticleTranslation(long articleId, String locale) {
+        return complete(submit(req("GET",
+                tmpl("/help_center/articles/{articleId}/translations/{locale}.json")
+                    .set("articleId", articleId).set("locale", locale)),
+            handle(Translation.class, "translation")));
     }
 
     public Article createArticle(Article article) {
@@ -2353,6 +2369,14 @@ public class Zendesk implements Closeable {
                 tmpl("/help_center/categories/{categoryId}/translations.json").set("categoryId", categoryId),
                 handleList(Translation.class, "translations"));
     }
+
+    public Translation showCategoryTranslation(long categoryId, String locale) {
+        return complete(submit(req("GET",
+                tmpl("/help_center/categories/{categoryId}/translations/{locale}.json")
+                    .set("categoryId", categoryId).set("locale", locale)),
+            handle(Translation.class, "translation")));
+    }
+
     public Category createCategory(Category category) {
         return complete(submit(req("POST", cnst("/help_center/categories.json"),
                 JSON, json(Collections.singletonMap("category", category))), handle(Category.class, "category")));
@@ -2404,6 +2428,14 @@ public class Zendesk implements Closeable {
                 tmpl("/help_center/sections/{sectionId}/translations.json").set("sectionId", sectionId),
                 handleList(Translation.class, "translations"));
     }
+
+    public Translation showSectionTranslation(long sectionId, String locale) {
+        return complete(submit(req("GET",
+                tmpl("/help_center/sections/{sectionId}/translations/{locale}.json")
+                    .set("sectionId", sectionId).set("locale", locale)),
+            handle(Translation.class, "translation")));
+    }
+
     public Section createSection(Section section) {
         checkHasCategoryId(section);
         return complete(submit(req("POST", tmpl("/help_center/categories/{id}/sections.json").set("id", section.getCategoryId()),

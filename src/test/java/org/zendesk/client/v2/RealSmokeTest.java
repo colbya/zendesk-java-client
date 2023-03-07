@@ -47,6 +47,7 @@ import org.zendesk.client.v2.model.dynamic.DynamicContentItemVariant;
 import org.zendesk.client.v2.model.events.Event;
 import org.zendesk.client.v2.model.hc.Article;
 import org.zendesk.client.v2.model.hc.Category;
+import org.zendesk.client.v2.model.hc.Locales;
 import org.zendesk.client.v2.model.hc.PermissionGroup;
 import org.zendesk.client.v2.model.hc.Section;
 import org.zendesk.client.v2.model.hc.Subscription;
@@ -95,6 +96,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assume.assumeThat;
 
 /**
@@ -1634,6 +1636,19 @@ public class RealSmokeTest {
     }
 
     @Test
+    public void listHelpCenterLocales() throws Exception {
+        createClientWithTokenOrPassword();
+
+        Locales locales = instance.listHelpCenterLocales();
+
+        assertNotNull(locales);
+        assertNotNull(locales.getDefaultLocale());
+        assertNotNull(locales.getLocales());
+        assertFalse(locales.getLocales().isEmpty());
+        assertTrue(locales.getLocales().contains(locales.getDefaultLocale()));
+    }
+
+    @Test
     public void getArticleTranslations() throws Exception {
         createClientWithTokenOrPassword();
         int articleCount = 0;
@@ -1650,6 +1665,38 @@ public class RealSmokeTest {
                 //assertNotNull(t.getBody());
                 if (++translationCount > 3) {
                     return;
+                }
+            }
+        }
+    }
+
+    @Test
+    public void showArticleTranslation() throws Exception {
+        createClientWithTokenOrPassword();
+        List<String> locales = instance.listHelpCenterLocales().getLocales();
+
+        int articleCount = 0;
+
+        for (Article article : instance.getArticles()) {
+            assertNotNull(article.getId());
+
+            if (++articleCount > 10) {
+                break;
+            }
+
+            int translationCount = 0;
+
+            for (String locale : locales) {
+                Translation translation = instance.showArticleTranslation(article.getId(), locale);
+
+                // if there is no translation for the given locale the endpoint will return null
+                if (translation != null) {
+                    assertNotNull(translation.getId());
+                    assertNotNull(translation.getTitle());
+                }
+
+                if (++translationCount > 3) {
+                    break;
                 }
             }
         }
@@ -1678,6 +1725,38 @@ public class RealSmokeTest {
     }
 
     @Test
+    public void showSectionTranslation() throws Exception {
+        createClientWithTokenOrPassword();
+        List<String> locales = instance.listHelpCenterLocales().getLocales();
+
+        int sectionCount = 0;
+
+        for (Section section : instance.getSections()) {
+            assertNotNull(section.getId());
+
+            if (++sectionCount > 10) {
+                break;
+            }
+
+            int translationCount = 0;
+
+            for (String locale : locales) {
+                Translation translation = instance.showSectionTranslation(section.getId(), locale);
+
+                // if there is no translation for the given locale the endpoint will return null
+                if (translation != null) {
+                    assertNotNull(translation.getId());
+                    assertNotNull(translation.getTitle());
+                }
+
+                if (++translationCount > 3) {
+                    break;
+                }
+            }
+        }
+    }
+
+    @Test
     public void getCategoryTranslations() throws Exception {
         createClientWithTokenOrPassword();
         int categoryCount = 0;
@@ -1694,6 +1773,38 @@ public class RealSmokeTest {
                 //assertNotNull(t.getBody());
                 if (++translationCount > 3) {
                     return;
+                }
+            }
+        }
+    }
+
+    @Test
+    public void showCategoryTranslation() throws Exception {
+        createClientWithTokenOrPassword();
+        List<String> locales = instance.listHelpCenterLocales().getLocales();
+
+        int categoryCount = 0;
+
+        for (Category category : instance.getCategories()) {
+            assertNotNull(category.getId());
+
+            if (++categoryCount > 10) {
+                break;
+            }
+
+            int translationCount = 0;
+
+            for (String locale : locales) {
+                Translation translation = instance.showCategoryTranslation(category.getId(), locale);
+
+                // if there is no translation for the given locale the endpoint will return null
+                if (translation != null) {
+                    assertNotNull(translation.getId());
+                    assertNotNull(translation.getTitle());
+                }
+
+                if (++translationCount > 3) {
+                    break;
                 }
             }
         }
