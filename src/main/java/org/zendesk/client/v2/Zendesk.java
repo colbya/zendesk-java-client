@@ -1415,7 +1415,7 @@ public class Zendesk implements Closeable {
         complete(submit(req("DELETE", tmpl("/organizations/{id}.json").set("id", id)), handleStatus()));
     }
 
-    public JobStatus deleteOrganizations(List<Long> ids) {
+    public JobStatus deleteOrganizations(long... ids) {
         return complete(submit(req("DELETE", tmpl("/organizations/destroy_many.json{?ids}").set("ids", ids)),
                 handleJobStatus()));
     }
@@ -3138,10 +3138,10 @@ public class Zendesk implements Closeable {
         }
     }
 
-    private static <R> List<R> idArray(R id, R... ids) {
-        List<R> result = new ArrayList<>(ids.length + 1);
+    private static List<Long> idArray(long id, long... ids) {
+        List<Long> result = new ArrayList<>(ids.length + 1);
         result.add(id);
-        for (R i : ids) {
+        for (long i : ids) {
             result.add(i);
         }
         return result;
