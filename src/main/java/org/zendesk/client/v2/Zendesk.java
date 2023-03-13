@@ -928,7 +928,17 @@ public class Zendesk implements Closeable {
                 handleList(User.class, "users")));
     }
 
-    public List<User> getUsersByExternalIds(String externalId, String... externalIds) {
+    /**
+     * @deprecated - User externalIds are Strings in Zendesk API, not longs.
+     * Use {@link #getUsersByExternalIds(String, String...)} instead
+     */
+    @Deprecated
+    public List<User> getUsersByExternalIds(long externalId, long... externalIds) {
+        return complete(submit(req("GET", tmpl("/users/show_many.json{?external_ids}").set("external_ids", idArray(externalId, externalIds))),
+                handleList(User.class, "users")));
+    }
+
+   public List<User> getUsersByExternalIds(String externalId, String... externalIds) {
         return complete(submit(req("GET", tmpl("/users/show_many.json{?external_ids}").set("external_ids", idArray(externalId, externalIds))),
                 handleList(User.class, "users")));
     }
@@ -1030,13 +1040,8 @@ public class Zendesk implements Closeable {
         complete(submit(req("DELETE", tmpl("/users/{id}.json").set("id", id)), handleStatus()));
     }
 
-    public JobStatus deleteUsers(List<Long> ids) {
+    public JobStatus deleteUsers(long... ids) {
         return complete(submit(req("DELETE", tmpl("/users/destroy_many.json{?ids}").set("ids", ids)),
-                handleJobStatus()));
-    }
-
-    public JobStatus deleteUsers(String... externalIds) {
-        return complete(submit(req("DELETE", tmpl("/users/destroy_many.json{?external_ids}").set("ids", Arrays.asList(externalIds))),
                 handleJobStatus()));
     }
 
@@ -3137,6 +3142,15 @@ public class Zendesk implements Closeable {
         List<R> result = new ArrayList<>(ids.length + 1);
         result.add(id);
         for (R i : ids) {
+            result.add(i);
+        }
+        return result;
+    }
+
+    private static List<String> idArray(String id, String... ids) {
+        List<String> result = new ArrayList<>(ids.length + 1);
+        result.add(id);
+        for (String i : ids) {
             result.add(i);
         }
         return result;
