@@ -1440,6 +1440,25 @@ public class RealSmokeTest {
     }
 
     @Test
+    public void deleteOrganizationsById() throws Exception {
+        createClientWithTokenOrPassword();
+
+        final List<Organization> organizations = createTestOrganizationsInZendesk();
+        final long[] ids = organizations.stream().mapToLong(Organization::getId).toArray();
+        final JobStatus status = waitJobCompletion(instance.deleteOrganizations(ids));
+
+        assertThat("Job is completed", status.getStatus(), is(JobStatus.JobStatusEnum.completed));
+        assertThat("The good number of organizations were processed", status.getTotal(), is(organizations.size()));
+        assertThat("We have a result for each organization", status.getResults(), hasSize(organizations.size()));
+        assertThat("Job reports that the same organization requested to be deleted were deleted",
+                status.getResults()
+                        .stream()
+                        .map(JobResult::getId)
+                        .collect(Collectors.toList()),
+                containsInAnyOrder(Arrays.stream(ids).boxed().toArray()));
+    }
+
+    @Test
     public void createOrUpdateOrganization() throws Exception {
         createClientWithTokenOrPassword();
 
